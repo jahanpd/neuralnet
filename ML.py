@@ -2,8 +2,11 @@ import data as d
 import initialTheta
 import numpy as np
 import costFunction as cf
+import os
 
-csv = "/home/jahan/Documents/Hackz/ML/BreastMass/bcfna.csv"
+__file__='bcfna.csv'
+csv = os.path.realpath(
+    os.path.join(os.getcwd(), __file__))
 
 X_trn, X_tst, y_trn, y_tst, m_trn, n_trn, m_tst, n_tst = d.import_data(csv)
 
