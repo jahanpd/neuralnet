@@ -4,7 +4,7 @@ import numpy as np
 import costFunction as cf
 import os
 
-__file__='bcfna.csv'
+__file__ = 'ML/BreastMass/bcfna.csv'
 csv = os.path.realpath(
     os.path.join(os.getcwd(), __file__))
 
@@ -17,7 +17,7 @@ X_trn = d.normalise(X_trn)
 # hidden layers
 hl = 5
 # nodes in each hidden layer
-nl = 5
+nl = 10
 # number of outputs
 out = 2
 
