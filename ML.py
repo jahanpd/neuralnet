@@ -17,7 +17,7 @@ X_trn = d.normalise(X_trn)
 # hidden layers
 hl = 5
 # nodes in each hidden layer
-nl = 100
+nl = 5
 # number of outputs
 out = 2
 
