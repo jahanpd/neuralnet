@@ -2,5 +2,7 @@ import numpy as np
 
 
 def sigmoid(z):
-    h0 = 1/(1+np.exp(z))
+    exp = np.exp(z)
+    den=1+exp
+    h0 = 1/den
     return h0

@@ -25,13 +25,14 @@ out = 2
 Th1 = initialTheta.Theta1(n_trn, nl, out)
 
 hl_thetas = initialTheta.ThetaHL(n_trn, nl, out, hl)
-Th2, Th3, Th4 = np.array_split(hl_thetas, 3)
+Th2, Th3, Th4, Th5 = np.array_split(hl_thetas, 4)
 Th2 = np.reshape(Th2, (nl+1, nl))
 Th2 = np.reshape(Th2, (nl+1, nl))
 Th3 = np.reshape(Th3, (nl+1, nl))
 Th3 = np.reshape(Th3, (nl+1, nl))
 Th4 = np.reshape(Th4, (nl+1, nl))
+Th5 = np.reshape(Th5, (nl+1, nl))
 
 ThOut = initialTheta.ThetaOut(n_trn, nl, out)
 
-cf.costFunction(X_trn, y_trn, Th1, Th2, Th3, Th4, ThOut, m_trn, n_trn)
+cf.costFunction(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn)

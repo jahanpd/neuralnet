@@ -10,7 +10,7 @@ def Theta1(n_trn, nl, out):
 
 def ThetaHL(n_trn, nl, out, hl):
     epsilon = mt.sqrt(6)/mt.sqrt(out + n_trn)
-    hl_thetas = hl-2
+    hl_thetas = hl-1
     nl_thetas = nl + 1
     thetas = np.random.randn(nl_thetas*nl*hl_thetas)*(2*epsilon)-epsilon
     return thetas
