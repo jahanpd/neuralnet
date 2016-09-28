@@ -71,14 +71,55 @@ def costFunction(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn):
     ThetaReg = (np.sum(Th1r) + np.sum(Th2r) + np.sum(Th3r) + np.sum(Th4r) + np.sum(Th5r) + np.sum(ThOutr))
     J = J + ThetaReg
     print(J)
-    return a2, a3, a4, a5, a6, h0
 
-def gradient_descent(a2, a3, a4, a5, a6, h0, X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn):
-    d7 = h0 - y_trn
-    d6 = (ThOut)*(d7.T)
-    d6 = d6.T
-    print(d6.shape)
-    a61 = a6.applyfunc(sub1)
-    print(a6.shape)
-    print(a61.shape)
-    a6dif = (a6*a61)
+def gradient_descent(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn):
+    X_trn = X_trn.col_insert(0, ones(m_trn, 1))
+    r, c = Th1.shape
+    Th1Grad = zeros(r, c)
+    r, c = Th2.shape
+    Th2Grad = zeros(r, c)
+    r, c = Th3.shape
+    Th3Grad = zeros(r, c)
+    r, c = Th4.shape
+    Th4Grad = zeros(r, c)
+    r, c = Th5.shape
+    Th5Grad = zeros(r, c)
+    r, c = ThOut.shape
+    ThOutGrad = zeros(r, c)
+    for t in range(m_trn):
+        a1 = X_trn[t,:]
+        z2 = a1*Th1
+        a2 = z2.applyfunc(sig)
+        r, c = a2.shape
+        a2 = a2.col_insert(0, ones(r, 1))
+
+        z3 = a2*Th2
+        a3 = z3.applyfunc(sig)
+        r, c = a3.shape
+        a3 = a3.col_insert(0, ones(r, 1))
+
+        z4 = a3*Th3
+        a4 = z4.applyfunc(sig)
+        r, c = a4.shape
+        a4 = a4.col_insert(0, ones(r, 1))
+
+        z5 = a4*Th4
+        a5 = z5.applyfunc(sig)
+        r, c = a5.shape
+        a5 = a5.col_insert(0, ones(r, 1))
+
+        z6 = a5*Th5
+        a6 = z6.applyfunc(sig)
+        r, c = a6.shape
+        a6 = a6.col_insert(0, ones(r, 1))
+        
+        z7 = a6*ThOut
+        a7 = z7.applyfunc(sig)
+
+        d7 = a7-y_trn[t,:]
+        a6dif = a6.multiply_elementwise(a6.applyfunc(sub1))
+        d6 = (ThOut*(d7.T))
+        d6 = d6.multiply_elementwise(a6dif.T)
+        d5 = (Th5*d6)
+        print (a6dif.shape)
+        print (d6.shape)

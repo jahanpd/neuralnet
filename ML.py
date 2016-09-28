@@ -5,7 +5,7 @@ from sympy import *
 import costFunction as cf
 import os
 
-__file__ = 'ML/BreastMass/bcfna.csv'
+__file__ = 'bcfna.csv'
 csv = os.path.realpath(
     os.path.join(os.getcwd(), __file__))
 
@@ -38,5 +38,5 @@ Th5 = Matrix(np.reshape(Th5, (nl+1, nl)))
 ThOut = initialTheta.ThetaOut(n_trn, nl, out)
 ThOut = Matrix(ThOut)
 
-a2, a3, a4, a5, a6, h0 = cf.costFunction(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn)
-cf.gradient_descent(a2, a3, a4, a5, a6, h0, X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn)
+cf.costFunction(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn)
+cf.gradient_descent(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn)
