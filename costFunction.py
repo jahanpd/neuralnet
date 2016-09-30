@@ -89,6 +89,12 @@ def gradient_descent(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn)
     Th5Grad = zeros(r, c)
     r, c = ThOut.shape
     ThOutGrad = zeros(r, c)
+    Delta1 = 0
+    Delta2 = 0
+    Delta3 = 0
+    Delta4 = 0
+    Delta5 = 0
+    Delta6 = 0
     for t in range(m_trn):
         a1 = X_trn[t, :]
         z2 = a1*Th1
@@ -122,17 +128,46 @@ def gradient_descent(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn)
         d7 = a7-y_trn[t, :]
 
         d6 = (ThOut*(d7.T))
-        a6dif = sigdif(a6)
-        d6 = d6.multiply_elementwise(a6dif.T)
+        r, c = z6.shape
+        z6 = z6.col_insert(0, ones(r, 1))
+        z6dif = sigdif(z6)
+        d6 = d6.multiply_elementwise(z6dif.T)
 
-        d5 = ((Th5.T)*d6)
-        a5dif = sigdif(a5)
-        #d5 = d5.multiply_elementwise(a5.dif)
+        d6bp = d6
+        d6bp.row_del(0)
+        d5 = Th5*d6bp
+        r, c = z5.shape
+        z5 = z5.col_insert(0, ones(r, 1))
+        z5dif = sigdif(z5)
+        d5 = d5.multiply_elementwise(z5dif.T)
+        
+        d5bp = d5
+        d5bp.row_del(0)
+        d4 = (Th4*d5bp)
+        r, c = z4.shape
+        z4 = z4.col_insert(0, ones(r, 1))
+        z4dif = sigdif(z4)
+        d4 = d4.multiply_elementwise(z4dif.T)
 
-        print (d6.shape)
-        print (Th5.shape)
-        print (a5.shape)
-        print (a5dif.shape)
+        d4bp = d4
+        d4bp.row_del(0)
+        d3 = (Th3*d4bp)
+        r, c = z3.shape
+        z3 = z3.col_insert(0, ones(r, 1))
+        z3dif = sigdif(z3)
+        d3 = d3.multiply_elementwise(z3dif.T)
+
+        d3bp = d3
+        d3bp.row_del(0)
+        d2 = (Th2*d3bp)
+        r, c = z2.shape
+        z2 = z2.col_insert(0, ones(r, 1))
+        z2dif = sigdif(z2)
+        d2 = d2.multiply_elementwise(z3dif.T)
+
+        print(d2.shape)
+        print(a1.shape)
+        #Delta1 += (d2*
         """
 
         d6 = d6.multiply_elementwise(a6dif.T)

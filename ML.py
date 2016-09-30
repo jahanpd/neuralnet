@@ -5,7 +5,7 @@ from sympy import *
 import costFunction as cf
 import os
 
-__file__ = 'ML/BreastMass/bcfna.csv'
+__file__ = 'bcfna.csv'
 csv = os.path.realpath(
     os.path.join(os.getcwd(), __file__))
 
