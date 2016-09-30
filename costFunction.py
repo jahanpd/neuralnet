@@ -1,6 +1,7 @@
 import numpy as np
 from sympy import *
 import mpmath as mp
+from sigmoid import sigdif
 
 # sympy elementwise functions
 
@@ -68,9 +69,11 @@ def costFunction(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn):
     Th5r = np.power(Th5r, 2)
     ThOutr = np.power(ThOutr, 2)
 
-    ThetaReg = (np.sum(Th1r) + np.sum(Th2r) + np.sum(Th3r) + np.sum(Th4r) + np.sum(Th5r) + np.sum(ThOutr))
+    ThetaReg = (np.sum(Th1r) + np.sum(Th2r) + np.sum(Th3r) + np.sum(Th4r) +
+    np.sum(Th5r) + np.sum(ThOutr))
     J = J + ThetaReg
     print(J)
+
 
 def gradient_descent(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn):
     X_trn = X_trn.col_insert(0, ones(m_trn, 1))
@@ -87,7 +90,7 @@ def gradient_descent(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn)
     r, c = ThOut.shape
     ThOutGrad = zeros(r, c)
     for t in range(m_trn):
-        a1 = X_trn[t,:]
+        a1 = X_trn[t, :]
         z2 = a1*Th1
         a2 = z2.applyfunc(sig)
         r, c = a2.shape
@@ -112,14 +115,26 @@ def gradient_descent(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn)
         a6 = z6.applyfunc(sig)
         r, c = a6.shape
         a6 = a6.col_insert(0, ones(r, 1))
-        
+
         z7 = a6*ThOut
         a7 = z7.applyfunc(sig)
 
-        d7 = a7-y_trn[t,:]
-        a6dif = a6.multiply_elementwise(a6.applyfunc(sub1))
+        d7 = a7-y_trn[t, :]
+
         d6 = (ThOut*(d7.T))
+        a6dif = sigdif(a6)
         d6 = d6.multiply_elementwise(a6dif.T)
-        d5 = (Th5*d6)
-        print (a6dif.shape)
+
+        d5 = ((Th5.T)*d6)
+        a5dif = sigdif(a5)
+        #d5 = d5.multiply_elementwise(a5.dif)
+
         print (d6.shape)
+        print (Th5.shape)
+        print (a5.shape)
+        print (a5dif.shape)
+        """
+
+        d6 = d6.multiply_elementwise(a6dif.T)
+
+"""

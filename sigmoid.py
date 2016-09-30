@@ -1,9 +1,10 @@
 import numpy as np
-import sympy as sy
+from sympy import *
+
+sub1 = lambda x: 1.0-x
 
 
-def sigmoid(z):
-    exp = np.exp(z)
-    den = 1.+ exp
-    h0 = 1./den
-    return h0
+def sigdif(z):
+    zsub1 = z.applyfunc(sub1)
+    out = z.multiply_elementwise(zsub1)
+    return out
