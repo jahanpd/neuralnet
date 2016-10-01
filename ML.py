@@ -5,7 +5,7 @@ from sympy import *
 import costFunction as cf
 import os
 
-__file__ = 'bcfna.csv'
+__file__ = 'ML/BreastMass/bcfna.csv'
 csv = os.path.realpath(
     os.path.join(os.getcwd(), __file__))
 
@@ -24,6 +24,12 @@ nl = 10
 # number of outputs
 out = 2
 
+# alpha for gradient descent
+alpha = lambda x: 0.0001*x
+
+# lambda Regularisation
+lmbd = 1
+
 # generate thetas, initialise to a random value between [-eps,eps]
 Th1 = initialTheta.Theta1(n_trn, nl, out)
 
@@ -38,5 +44,20 @@ Th5 = Matrix(np.reshape(Th5, (nl+1, nl)))
 ThOut = initialTheta.ThetaOut(n_trn, nl, out)
 ThOut = Matrix(ThOut)
 
-cf.costFunction(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn)
-cf.gradient_descent(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn)
+count = 0
+while count < 100:
+    J = cf.costFunction(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn,
+        n_trn, lmbd)
+
+    Th1Grad, Th2Grad, Th3Grad, Th4Grad, Th5Grad, ThOutGrad = \
+        cf.gradient_descent(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut,
+            m_trn, n_trn)
+
+    print(J)
+    Th1 = Th1 - (Th1Grad.applyfunc(alpha))
+    Th2 = Th2 - (Th2Grad.applyfunc(alpha))
+    Th3 = Th3 - (Th3Grad.applyfunc(alpha))
+    Th4 = Th4 - (Th4Grad.applyfunc(alpha))
+    Th5 = Th5 - (Th5Grad.applyfunc(alpha))
+    ThOut = ThOut - (ThOutGrad.applyfunc(alpha))
+    count += 1

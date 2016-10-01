@@ -11,7 +11,8 @@ sub1 = lambda x: 1.0-x
 sqar = lambda x: mp.power(x, 2)
 
 
-def costFunction(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn):
+def costFunction(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn,
+    lmbd):
     X_trn = X_trn.col_insert(0, ones(m_trn, 1))
     a2 = X_trn*Th1
     a2 = a2.applyfunc(sig)
@@ -37,17 +38,15 @@ def costFunction(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn):
     h0 = h0.applyfunc(sig)
 
     j1h0 = h0.applyfunc(mlog)
-    j1h0 = j1h0.transpose()
     j2h0 = h0.applyfunc(sub1)
     j2h0 = j2h0.applyfunc(mlog)
-    j2h0 = j2h0.transpose()
     j2y = y_trn.applyfunc(sub1)
-    Jpart1 = y_trn*j1h0
-    Jpart2 = j2y*j2h0
-    J = Jpart1 + Jpart2
+    Jpart1 = y_trn.multiply_elementwise(j1h0)
+    Jpart2 = j2y.multiply_elementwise(j2h0)
+    J = Jpart1 - Jpart2
     J = np.array(J).astype(np.float64)
-    J = np.sum(J)
-    J = -(J/m_trn)
+    J = np.sum(J, axis=1)
+    J = (1/m_trn)*(np.sum(J))
 
     # Regularisation
     Th1r = np.array(Th1).astype(np.float64)
@@ -69,13 +68,14 @@ def costFunction(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn):
     Th5r = np.power(Th5r, 2)
     ThOutr = np.power(ThOutr, 2)
 
-    ThetaReg = (np.sum(Th1r) + np.sum(Th2r) + np.sum(Th3r) + np.sum(Th4r) +
-    np.sum(Th5r) + np.sum(ThOutr))
+    ThetaReg = (lmbd*(np.sum(Th1r) + np.sum(Th2r) + np.sum(Th3r) + np.sum(Th4r) +
+    np.sum(Th5r) + np.sum(ThOutr)))/(2*m_trn)
     J = J + ThetaReg
-    print(J)
+    return J
 
 
-def gradient_descent(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn):
+def gradient_descent(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn,
+    n_trn):
     X_trn = X_trn.col_insert(0, ones(m_trn, 1))
     r, c = Th1.shape
     Th1Grad = zeros(r, c)
@@ -89,12 +89,7 @@ def gradient_descent(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn)
     Th5Grad = zeros(r, c)
     r, c = ThOut.shape
     ThOutGrad = zeros(r, c)
-    Delta1 = 0
-    Delta2 = 0
-    Delta3 = 0
-    Delta4 = 0
-    Delta5 = 0
-    Delta6 = 0
+
     for t in range(m_trn):
         a1 = X_trn[t, :]
         z2 = a1*Th1
@@ -140,7 +135,7 @@ def gradient_descent(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn)
         z5 = z5.col_insert(0, ones(r, 1))
         z5dif = sigdif(z5)
         d5 = d5.multiply_elementwise(z5dif.T)
-        
+
         d5bp = d5
         d5bp.row_del(0)
         d4 = (Th4*d5bp)
@@ -164,12 +159,41 @@ def gradient_descent(X_trn, y_trn, Th1, Th2, Th3, Th4, Th5, ThOut, m_trn, n_trn)
         z2 = z2.col_insert(0, ones(r, 1))
         z2dif = sigdif(z2)
         d2 = d2.multiply_elementwise(z3dif.T)
+        d2.row_del(0)
 
-        print(d2.shape)
-        print(a1.shape)
-        #Delta1 += (d2*
-        """
+        d2 = d2.T
+        a1 = a1.T
+        r, c = a1.shape
+        for x in range(r):
+            Th1Grad[x, :] += a1[x, :]*d2
 
-        d6 = d6.multiply_elementwise(a6dif.T)
+        d3 = d3.T
+        a2 = a2.T
+        r, c = a2.shape
+        for x in range(r):
+            Th2Grad[x, :] += a2[x, :]*d3
 
-"""
+        d4 = d4.T
+        a3 = a3.T
+        r, c = a3.shape
+        for x in range(r):
+            Th3Grad[x, :] += a3[x, :]*d4
+
+        d5 = d5.T
+        a4 = a4.T
+        r, c = a4.shape
+        for x in range(r):
+            Th4Grad[x, :] += a4[x, :]*d5
+
+        d6 = d6.T
+        a5 = a5.T
+        r, c = a5.shape
+        for x in range(r):
+            Th5Grad[x, :] += a5[x, :]*d6
+
+        a6 = a6.T
+        r, c = a6.shape
+        for x in range(r):
+            ThOutGrad[x, :] += a6[x, :]*d7
+
+        return Th1Grad, Th2Grad, Th3Grad, Th4Grad, Th5Grad, ThOutGrad
